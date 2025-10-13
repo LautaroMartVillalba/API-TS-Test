@@ -1,0 +1,23 @@
+services:
+# # ---------------POSTGRES-----------------
+  db:
+    image: lautaromvillalba/postgres-custom:V1.2
+    restart: always
+    shm_size: 128mb
+    ports:
+      - "5431:5432"
+    container_name: database
+    volumes:
+      - postgres_persist:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: database
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres", "-d", "airline" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  postgres_persist:
