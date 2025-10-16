@@ -19,7 +19,7 @@ export class UserController {
   }
 
   @Get('/byemail')
-  getByEmail(@Query('email') email: string): Promise<UserResponseDTO[]>{
+  getByEmail(@Query('email') email: string): Promise<UserResponseDTO>{
     return this.userService.findByEmail(email);
   }
 

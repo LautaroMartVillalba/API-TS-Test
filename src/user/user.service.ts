@@ -32,16 +32,27 @@ export class UserService {
     return plainToInstance(UserResponseDTO, result, {excludeExtraneousValues: true});
   }
 
-  async findByEmail(email: string): Promise<UserResponseDTO[]> {
-    if(email.match("") || email == null){
+  async findByEmail(email: string): Promise<UserResponseDTO> {
+    if(email == null || email == ''){
       throw new Error("Email cannot be null.");
     }
 
-    const result = await this.prisma.user.findMany({
+    const result = await this.prisma.user.findUnique({
       where: {email}
     });
 
     return plainToInstance(UserResponseDTO, result, {excludeExtraneousValues: true});
+  }
+
+  // Returns the raw user record (includes password). Use carefully (e.g. for auth).
+  async findRawByEmail(email: string) {
+    if (email == null || email == '') {
+      throw new Error('Email cannot be null.');
+    }
+    console.log('UserService.findRawByEmail called with:', email);
+    const result = await this.prisma.user.findUnique({ where: { email } });
+    console.log('UserService.findRawByEmail result:', result && { id: result.id, email: result.email, hasPassword: !!result.password });
+    return result;
   }
 
   async delete(email: string) {
