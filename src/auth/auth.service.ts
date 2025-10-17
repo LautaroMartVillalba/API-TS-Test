@@ -13,10 +13,11 @@ export class AuthService{
                     throw new Error("Password doesn't matchs.");
                 }
 
-                const payload = {sub: user.id, email: user.email, privileges: user.privileges};
-                const token = await this.jwtService.signAsync(payload);
+                const payload = {sub: user.email, privileges: user.privileges};
+                const accessToken = await this.jwtService.signAsync(payload);
+                const refreshToken = await this.jwtService.signAsync({sub: user.email})
 
-                return token;
+                return {accessToken, refreshToken};
         }
 
     async verifyToken(token: string){
