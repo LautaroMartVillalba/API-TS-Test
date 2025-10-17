@@ -41,10 +41,10 @@ export class ProductService {
 		});
 	}
 
-	async findByName(name: string): Promise<ProductResponseDTO[]> {
-		if (name == null || name.match('')) {
-			throw new Error('Name cannot be null.');
-		}
+		async findByName(name: string): Promise<ProductResponseDTO[]> {
+			if (!name || name == null || name.trim() === '') {
+				throw new Error('Name cannot be null.');
+			}
 
 		const result = await this.prisma.product.findMany({
 			where: { name },
@@ -76,6 +76,7 @@ export class ProductService {
 		const result = await this.prisma.product.update({
 			where: { id },
 			data: {
+				name: dto.name,
 				brand: dto.brand,
 				unitPrice: dto.unitPrice,
 				stock: dto.stock,

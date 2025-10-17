@@ -1,14 +1,16 @@
 /* eslint-disable prettier/prettier */
 
+import { PrivilegesName } from "@prisma/client";
+
 // prettier-ignore
 export class UserDTO {
 
     private _id: number;
     private _email: string;
     private _password: string;
-    private _privileges: string[] = [];
+    private _privileges: PrivilegesName[] = [];
 
-    constructor(email: string, password: string, privileges: string[]) {
+    constructor(email: string, password: string, privileges: PrivilegesName[]) {
         this.email = email;
         this.password = password;
         this.privileges = privileges;
@@ -33,10 +35,10 @@ export class UserDTO {
     public set password(value: string) {
         this._password = value;
     }
-    public get privileges(): string[] {
+    public get privileges(): PrivilegesName[] {
         return this._privileges;
     }
-    public set privileges(value: string[]) {
+    public set privileges(value: PrivilegesName[]) {
         this._privileges = value;
     }
 }

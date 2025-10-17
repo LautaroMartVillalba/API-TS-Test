@@ -3,6 +3,7 @@ import { PrismaService } from 'prisma/prisma.service';
 import { UserDTO } from './user.dto';
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDTO } from './user.dtoresponse';
+import { PrivilegesName } from '@prisma/client';
 // prettier-ignore
 @Injectable()
 export class UserService {
@@ -19,7 +20,7 @@ export class UserService {
 
     const email: string = userDTO.email;
     const password: string = userDTO.password;
-    const privileges: string[] = userDTO.privileges;
+    const privileges: PrivilegesName[] = userDTO.privileges;
 
     const data = {email, password, privileges};
 
@@ -33,7 +34,7 @@ export class UserService {
   }
 
   async findByEmail(email: string): Promise<UserResponseDTO> {
-    if(email == null || email == ''){
+    if (!email || email == null || email.trim() === ''){
       throw new Error("Email cannot be null.");
     }
 
@@ -45,18 +46,16 @@ export class UserService {
   }
 
   // Returns the raw user record (includes password). Use carefully (e.g. for auth).
-  async findRawByEmail(email: string) {
+  async findRawByEmailForAuth(email: string) {
     if (email == null || email == '') {
       throw new Error('Email cannot be null.');
     }
-    console.log('UserService.findRawByEmail called with:', email);
     const result = await this.prisma.user.findUnique({ where: { email } });
-    console.log('UserService.findRawByEmail result:', result && { id: result.id, email: result.email, hasPassword: !!result.password });
     return result;
   }
 
   async delete(email: string) {
-    if(email.match("") || email == null){
+    if (!email || email == null || email.trim() === ''){
       throw new Error("Email cannot be null.");
     }
 
@@ -66,19 +65,21 @@ export class UserService {
   }
 
   async update(email: string, dto: UserDTO){
-    if(email.match("") || email == null){
+    if (!email || email == null || email.trim() === ''){
       throw new Error("Email cannot be null.");
     }
     if(dto == null){
       throw new Error("User info body cannot be null.");
     }
 
+    const data: any = {
+      privileges: dto.privileges,
+      password: dto.password
+    };
+
     const result = await this.prisma.user.update({
       where: {email},
-      data: {
-        privileges: dto.privileges,
-        password: dto.password
-      },
+      data,
     });
 
     return plainToInstance(UserResponseDTO, result, {excludeExtraneousValues:true});

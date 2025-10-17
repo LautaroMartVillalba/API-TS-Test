@@ -7,11 +7,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum PrivilegesName {
+  READ
+  POST
+  PATCH
+  PUT
+  DELETE
+}
+
 model User{
   id Int @id @default(autoincrement())
   email String @unique
   password String
-  privileges String[]
+  privileges PrivilegesName[]
 }
 
 model Product{

@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Exclude, Expose } from "class-transformer";
+import { PrivilegesName } from "@prisma/client";
 
 export class UserResponseDTO {
 
@@ -10,6 +11,6 @@ export class UserResponseDTO {
     @Exclude()
     password: string;
     @Expose()
-    privileges: string[] = [];
+    privileges: PrivilegesName[] = [];
 
 }

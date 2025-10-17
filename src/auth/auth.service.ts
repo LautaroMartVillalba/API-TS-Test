@@ -8,10 +8,7 @@ export class AuthService{
     constructor(private readonly jwtService: JwtService, private readonly userService: UserService){}
 
         async login (email: string, password: string){
-                    console.log('AuthService.login called with:', {email, password});
-                // use raw find to get password field which is excluded in the transformed response DTO
-                const user = await this.userService.findRawByEmail(email);
-                    console.log('AuthService.login found user:', user && {id: user.id, email: user.email, hasPassword: !!user.password});
+                const user = await this.userService.findRawByEmailForAuth(email);
                 if (!user || user.password !== password) {
                     throw new Error("Password doesn't matchs.");
                 }
