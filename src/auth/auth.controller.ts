@@ -17,21 +17,22 @@ export class AuthController{
     async login(
         @Res({passthrough: true}) response: Response,
         @Body() dto: {email: string, password:string}
-    ){
-        console.log('AuthController.login received dto:', dto);
+        ){
         const { accessToken, refreshToken } = await this.authService.login(dto.email, dto.password);
 
         response.cookie('jwt', accessToken, {
             httpOnly: true,
             secure: true,
             maxAge: 1000 * 60 * 15,
-        });
+            }
+        );
 
         response.cookie('refresh', refreshToken, {
             httpOnly: true,
             secure: true,
             maxAge: 1000 * 60 * 60 * 24 * 7,
-        });
+            }
+        );
 
         return {mesagge: 'Login succesfully.'};
     }
@@ -39,6 +40,7 @@ export class AuthController{
     @Post('/logout')
     logout(@Res({ passthrough: true }) response: Response) {
       response.cookie('jwt', '', { maxAge: 0 });
+      response.cookie('refresh', '', { maxAge: 0 });
       
       return { message: 'Logout successful' };
     }
@@ -50,24 +52,17 @@ export class AuthController{
             throw new UnauthorizedException("Refresh token does not exists,");
         }
 
-        const payload = await this.jwtService.verifyAsync(tokenRefresh);
-
-        const user = await this.userService.findRawByEmailForAuth(payload.sub)
-
-        if(!user){
-            throw new Error("user not found");
-        }
-
-        const newAccessToken =  await this.jwtService.signAsync({sub: user.email, privileges: user.privileges});
+        const jwt = await this.authService.refreshToken(req);
 
         response.cookie(
             'jwt',
-            newAccessToken,
+            jwt,
             {
                 secure: true,
                 httpOnly: true,
-                maxAge: 1000*60*15
-            });
+                maxAge: 1000 * 60 * 15
+            }
+        );
 
         return {message: "Refreshed succesfully"}
     }
