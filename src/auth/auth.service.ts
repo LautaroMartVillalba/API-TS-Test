@@ -3,6 +3,7 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Response } from "express";
 import { UserService } from "src/user/user.service";
+import * as bcrypt from 'bcrypt';
 
 /**
  * AuthService
@@ -37,7 +38,9 @@ export class AuthService{
      */
     async login (email: string, password: string, response: Response): Promise<void>{
         const user = await this.userService.findRawByEmailForAuth(email);
-        if (!user || user.password !== password) {
+        const match = await bcrypt.compare(password, user.password);
+
+        if (!match) {
             throw new Error("Password doesn't matchs.");
         }
         

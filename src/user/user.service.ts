@@ -5,6 +5,7 @@ import { UserDTO } from './user.dto';
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDTO } from './user.dtoresponse';
 import { PrivilegesName } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 /**
  * UserService
@@ -37,6 +38,11 @@ export class UserService {
     return dto.email != null && dto.password != null && dto.privileges != null;
   }
 
+  // async hashPassword(pass: string): Promise<string>{
+  //   const saltValue: number = 10;
+  //   const salt = await bCrypt.
+  // }
+
   /**
    * createUser(userDTO: UserDTO)
    * 
@@ -50,8 +56,13 @@ export class UserService {
       throw new Error("User info body cannot be null.");
     }
 
+
+    const rounds = parseInt(process.env.BCRYPT_SALT_ROUNDS);
+
+    const hashed = await bcrypt.hash(userDTO.password, rounds);
+
     const email: string = userDTO.email;
-    const password: string = userDTO.password;
+    const password: string = hashed;
     const privileges: PrivilegesName[] = userDTO.privileges;
 
     const data = {email, password, privileges};
