@@ -2,7 +2,6 @@
 
 import { PrivilegesName } from "@prisma/client";
 
-// prettier-ignore
 export class UserDTO {
 
     private _id: number;
