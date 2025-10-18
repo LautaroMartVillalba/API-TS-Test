@@ -24,7 +24,7 @@ export class PermissionGuard implements CanActivate{
             return false;
         }
 
-        return requiredPermissions.every(privilege => 
+        return requiredPermissions.some(privilege => 
             user.privileges.includes(privilege),
         );
     }

@@ -13,9 +13,20 @@ export class AuthService{
             throw new Error("Password doesn't matchs.");
         }
 
-        const payload = {sub: user.email, privileges: user.privileges};
-        const accessToken = await this.jwtService.signAsync(payload);
-        const refreshToken = await this.jwtService.signAsync({sub: user.email})
+        const payload = {
+            sub: user.id, 
+            email: user.email, 
+            privileges: user.privileges
+        };
+        
+        const accessToken = await this.jwtService.signAsync(
+            payload, 
+            {secret : process.env.JWT_SECRET}
+        );
+        const refreshToken = await this.jwtService.signAsync(
+            {sub: user.email}, 
+            {secret: process.env.JWT_REFRESH_SECRET}
+        );
 
         return {accessToken, refreshToken};
     }
@@ -26,24 +37,25 @@ export class AuthService{
 
     async refreshToken(req: any){
         const tokenRefresh = req.cookies?.refresh;
-        console.log(tokenRefresh);
             if(!tokenRefresh){
                 throw new UnauthorizedException("Refresh token does not exists,");
             }
         
             const payload = await this.jwtService.verifyAsync(tokenRefresh);
         
-        console.log(payload);
             const user = await this.userService.findRawByEmailForAuth(payload.sub)
         
-        console.log(user);
             if(!user){
                 throw new Error("user not found");
             }
         
-            const newAccessToken =  await this.jwtService.signAsync({sub: user.email, privileges: user.privileges});
+            const newAccessToken =  await this.jwtService.signAsync(
+                {
+                    sub: user.id,
+                    email: user.email,
+                    privileges: user.privileges
+                });
 
-        console.log(newAccessToken);
             return newAccessToken;
     }
 }

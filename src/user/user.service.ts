@@ -45,6 +45,18 @@ export class UserService {
     return plainToInstance(UserResponseDTO, result, {excludeExtraneousValues: true});
   }
 
+  async findById(id: number): Promise<UserResponseDTO>{
+    if(!id){
+      throw new Error("Id cannot be null.");
+    }
+
+    const result = await this.prisma.user.findUnique({
+      where: {id}
+    });
+
+    return plainToInstance(UserResponseDTO, result, {excludeExtraneousValues: true})
+  }
+
   // Returns the raw user record (includes password). Use carefully (e.g. for auth).
   async findRawByEmailForAuth(email: string) {
     if (email == null || email == '') {
