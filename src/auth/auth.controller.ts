@@ -22,14 +22,14 @@ export class AuthController{
 
         response.cookie('jwt', accessToken, {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV === 'production',
             maxAge: 1000 * 60 * 15,
             }
         );
 
         response.cookie('refresh', refreshToken, {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV === 'production',
             maxAge: 1000 * 60 * 60 * 24 * 7,
             }
         );
@@ -39,10 +39,10 @@ export class AuthController{
 
     @Post('/logout')
     logout(@Res({ passthrough: true }) response: Response) {
-      response.cookie('jwt', '', { maxAge: 0 });
-      response.cookie('refresh', '', { maxAge: 0 });
-      
-      return { message: 'Logout successful' };
+        response.cookie('jwt', '', { maxAge: 0 });
+        response.cookie('refresh', '', { maxAge: 0 });
+        
+        return { message: 'Logout successful' };
     }
 
     @Post('/refresh')
@@ -58,8 +58,8 @@ export class AuthController{
             'jwt',
             jwt,
             {
-                secure: true,
                 httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
                 maxAge: 1000 * 60 * 15
             }
         );
@@ -70,6 +70,6 @@ export class AuthController{
     @UseGuards(JwtAuthGuard)
     @Get('profile')
     getProfile(@Req() req) {
-      return req.user;
+        return req.user;
     }
 }
