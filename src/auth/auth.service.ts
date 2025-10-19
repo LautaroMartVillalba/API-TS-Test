@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Response } from "express";
 import { UserService } from "src/user/user.service";
@@ -41,7 +41,7 @@ export class AuthService{
         const match = await bcrypt.compare(password, user.password);
 
         if (!match) {
-            throw new Error("Password doesn't matchs.");
+            throw new UnauthorizedException("Password doesn't matchs.");
         }
         
         const payload = {
@@ -114,7 +114,7 @@ export class AuthService{
             const user = await this.userService.findRawByEmailForAuth(payload.sub)
             
             if(!user){
-                throw new Error("user not found");
+                throw new NotFoundException("user not found");
             }
             
             const newAccessToken =  await this.jwtService.signAsync(

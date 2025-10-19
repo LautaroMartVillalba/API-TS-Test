@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { UserDTO } from './user.dto';
 import { plainToInstance } from 'class-transformer';
@@ -53,7 +53,7 @@ export class UserService {
    */
   async createUser(userDTO: UserDTO){
     if(userDTO == null){
-      throw new Error("User info body cannot be null.");
+      throw new ConflictException("User info body cannot be null.");
     }
 
 
@@ -92,7 +92,7 @@ export class UserService {
    */
   async findByEmail(email: string): Promise<UserResponseDTO> {
     if (!email || email == null || email.trim() === ''){
-      throw new Error("Email cannot be null.");
+      throw new ConflictException("Email cannot be null.");
     }
 
     const result = await this.prisma.user.findUnique({
@@ -112,7 +112,7 @@ export class UserService {
    */
   async findById(id: number): Promise<UserResponseDTO>{
     if(!id){
-      throw new Error("Id cannot be null.");
+      throw new ConflictException("Id cannot be null.");
     }
 
     const result = await this.prisma.user.findUnique({
@@ -133,7 +133,7 @@ export class UserService {
    */
   async findRawByEmailForAuth(email: string) {
     if (email == null || email == '') {
-      throw new Error('Email cannot be null.');
+      throw new ConflictException('Email cannot be null.');
     }
     const result = await this.prisma.user.findUnique({ where: { email } });
     return result;
@@ -149,7 +149,7 @@ export class UserService {
    */
   async delete(email: string) {
     if (!email || email == null || email.trim() === ''){
-      throw new Error("Email cannot be null.");
+      throw new ConflictException("Email cannot be null.");
     }
 
     return this.prisma.user.delete({
@@ -169,10 +169,10 @@ export class UserService {
    */
   async update(email: string, dto: UserDTO){
     if (!email || email == null || email.trim() === ''){
-      throw new Error("Email cannot be null.");
+      throw new ConflictException("Email cannot be null.");
     }
     if(dto == null){
-      throw new Error("User info body cannot be null.");
+      throw new ConflictException("User info body cannot be null.");
     }
 
     const data: any = {

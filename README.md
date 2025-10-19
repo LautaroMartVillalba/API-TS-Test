@@ -49,6 +49,41 @@ npm run start:dev
 
 The server listens on port `3000` by default.
 
+## Example bodies
+
+### User
+If you can create a user, you can put this body model:
+```
+{
+    "email":"example@gmail.com",
+    "password":"example",
+    "privileges": ["POST"]
+}
+```
+You can change `privileges` value to:
+- `["POST", "READ", "PATCH"] `
+
+to include more than one privilege. You can combine between:
+-  `READ`
+-  `POST`
+-  `PATCH`
+-  `PUT`
+-  `DELETE` 
+
+### Product
+
+If you want to create a product register, you can put this body model:
+```
+{
+    "name":"Paracetamol",
+    "brand":"Puto",
+    "unitPrice": 10,
+    "stock": 100
+}
+```
+
+Yoy can change name and brand values as you want, allways like a string type; same with unitPrice and stock, like number types.
+
 ## Important endpoints
 
 - `POST /auth/login` — body: `{ "email": "...", "password": "..." }`.

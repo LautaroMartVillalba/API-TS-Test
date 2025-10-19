@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { ProductDTO } from './product.dto';
 import { plainToInstance } from 'class-transformer';
@@ -87,7 +87,7 @@ export class ProductService {
 	 */
 	async findByName(name: string): Promise<ProductResponseDTO[]> {
 		if (!name || name == null || name.trim() === '') {
-			throw new Error('Name cannot be null.');
+			throw new NotAcceptableException('Name cannot be null.');
 		}
 
 		const result = await this.prisma.product.findMany({
@@ -109,7 +109,7 @@ export class ProductService {
 	 */
 	async delete(id: number) {
 		if (id == null || Number.isNaN(id)) {
-			throw new Error('Id cannot be null.');
+			throw new NotAcceptableException('Id cannot be null.');
 		}
 
 		return this.prisma.product.delete({
@@ -128,10 +128,10 @@ export class ProductService {
 	 */
 	async update(id: number, dto: ProductDTO) {
 		if (id == null || Number.isNaN(id)) {
-			throw new Error('Id cannot be null.');
+			throw new NotAcceptableException('Id cannot be null.');
 		}
 		if (dto == null) {
-			throw new Error('Product info body cannot be null.');
+			throw new NotAcceptableException('Product info body cannot be null.');
 		}
 
 		const result = await this.prisma.product.update({
