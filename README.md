@@ -107,5 +107,3 @@ Yoy can change name and brand values as you want, allways like a string type; sa
 - The code includes simple console.log traces for debugging authentication flows —
 	remove them in production.
 
-If you want, I can also add example curl commands for the main flows (login/refresh) or
-create a small Postman collection. Which would you prefer?
