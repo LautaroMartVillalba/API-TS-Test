@@ -39,9 +39,7 @@ JWT_SECRET="your-access-secret"
 JWT_REFRESH_SECRET="your-refresh-secret"
 ```
 
-3. Run migrations / start Postgres (if you use docker-compose, start the DB)
-
-4. Start in development mode
+3. Start in development mode
 
 ```bash
 npm run start:dev
