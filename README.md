@@ -31,6 +31,8 @@ npm install
 
 Example `.env`:
 
+Note: DATABASE_URL must be literaly like the example.
+
 ```properties
 DATABASE_URL="postgres://root:password@localhost:5431/database"
 JWT_SECRET="your-access-secret"
