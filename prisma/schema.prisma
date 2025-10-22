@@ -14,18 +14,36 @@ enum PrivilegesName {
   PUT
   DELETE
 }
+enum CategoryName{
+  FOOD
+  TOOL
+  SCHOOL
+  PHARMACY
+  TECHNOLOGY
+}
+
+model Role{
+  id Int @id @default(autoincrement())
+  name String @unique
+  privileges PrivilegesName[]
+  categories CategoryName[]
+  users User[]
+}
 
 model User{
   id Int @id @default(autoincrement())
   email String @unique
   password String
-  privileges PrivilegesName[]
+  role Role  @relation(fields: [role_id], references: [id])
+  role_id Int
 }
+
 
 model Product{
   id Int @id @default(autoincrement())
   name String
   brand String
+  category CategoryName
   unitPrice Int
   stock Int
 }
