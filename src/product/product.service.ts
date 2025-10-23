@@ -4,6 +4,7 @@ import { PrismaService } from 'prisma/prisma.service';
 import { ProductDTO } from './product.dto';
 import { plainToInstance } from 'class-transformer';
 import { ProductResponseDTO } from './product.dtoresponse';
+import { CategoryName } from '@prisma/client';
 
 /**
  * ProductService
@@ -35,6 +36,7 @@ export class ProductService {
 		return (
 			dto.name != null &&
 			dto.brand != null &&
+			dto.category != null &&
 			dto.unitPrice != null &&
 			dto.stock != null
 		);
@@ -55,10 +57,11 @@ export class ProductService {
 
 		const name: string = productDTO.name;
 		const brand: string = productDTO.brand;
+		const category: CategoryName = productDTO.category;
 		const unitPrice: number = productDTO.unitPrice;
 		const stock: number = productDTO.stock;
 
-		const data = { name, brand, unitPrice, stock };
+		const data = { name, brand, category, unitPrice, stock };
 
 		return this.prisma.product.create({ data });
 	}
@@ -139,6 +142,7 @@ export class ProductService {
 			data: {
 				name: dto.name,
 				brand: dto.brand,
+				category: dto.category,
 				unitPrice: dto.unitPrice,
 				stock: dto.stock,
 			},

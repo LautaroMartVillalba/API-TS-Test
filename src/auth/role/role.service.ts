@@ -2,13 +2,11 @@
 import { PrismaService } from "prisma/prisma.service";
 import { RoleDTO } from "./role.roledto";
 import { Role } from "@prisma/client";
-import { Injectable } from "@nestjs/common";
 
-@Injectable()
 export class RoleService{
     constructor(private prisma: PrismaService){}
 
-    createRole(dto: RoleDTO): Promise<Role>{
+    createRole(dto: RoleDTO): Promise<Role | null>{
         if(dto.name == null || dto.categories == null || dto.privileges == null){
             throw new Error("Insert the entire Role data: name, category/ies name and privilege/s name");
         }
@@ -22,13 +20,16 @@ export class RoleService{
         return this.prisma.role.create({data});
     }
 
-    getRoleByName(name: string): Promise<Role>{
+    getRoleByName(name: string): Promise<Role | null>{
         if(name == null){
             throw new Error("Name cannot be null.");
         }
         
         return this.prisma.role.findUnique({
-            where: {name}
+            where: {name},
+            include: {
+                users: true
+            }
         });
     }
 
@@ -40,9 +41,42 @@ export class RoleService{
         const result: Role = await this.prisma.role.findUnique({
             where: {
                 id: id
+            },
+            include: {
+                users: true
             }
         });
 
+        return result;
+    }
+
+    async getPrivileges(id: number){
+        if(!id){
+            throw new Error("Id cannot be null.");
+        }
+
+        const result = await this.prisma.role.findUnique({
+            where: {id},
+            select: {
+                privileges: true,
+            }
+        });
+        
+        return result;
+    }
+
+    async getCategories(id: number){
+        if(!id){
+            throw new Error("Id cannot be null.");
+        }
+
+        const result = await this.prisma.role.findUnique({
+            where: {id},
+            select: {
+                categories: true,
+            }
+        });
+        
         return result;
     }
 
@@ -53,39 +87,23 @@ export class RoleService{
 
         const role: Role = await this.getRoleById(id);
 
-        const data = {
-            name: null,
-            privileges: null,
-            categories: null,
-        };
-
-        if(dto.name){
-            data.name = dto.name;
-        } else{
-            data.name = role.name;
-        }
-
-        if(dto.privileges){
-            data.privileges = dto.privileges;
-        } else{
-            data.privileges = role.privileges;
-        }
-
-        if(dto.categories){
-            data.categories = dto.categories;
-        } else{
-            data.categories = role.categories;
-        }
-
-        return this.prisma.role.updateManyAndReturn({data});
+        return this.prisma.role.update({
+            where: {id},
+            data: {
+                name: dto.name ?? role.name,
+                privileges: dto.privileges ?? role.privileges,
+                categories: dto.categories ?? role.categories
+                }
+            }
+        );
     }
 
-    deleteRole(id: number): void{
+    async deleteRole(id: number): Promise<Role>{
         if(!id){
             throw new Error("Id cannot be null.");
         }
 
-        this.prisma.role.delete({
+        return this.prisma.role.delete({
             where: {id}
         })
     }

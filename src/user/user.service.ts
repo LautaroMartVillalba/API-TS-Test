@@ -4,7 +4,7 @@ import { PrismaService } from 'prisma/prisma.service';
 import { UserDTO } from './user.dto';
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDTO } from './user.dtoresponse';
-import { PrivilegesName } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 /**
@@ -35,7 +35,9 @@ export class UserService {
    * @returns true if all required fields are present, false otherwise.
    */
   validateDTO(dto:UserDTO): boolean {
-    return dto.email != null && dto.password != null && dto.privileges != null;
+    return dto.email != null &&
+            dto.password != null &&
+            dto.roleName != null;
   }
 
   // async hashPassword(pass: string): Promise<string>{
@@ -51,7 +53,7 @@ export class UserService {
    * @param userDTO - Data Transfer Object containing email, password, and privileges.
    * @returns The created user entity.
    */
-  async createUser(userDTO: UserDTO){
+  async createUser(userDTO: UserDTO): Promise<User>{
     if(userDTO == null){
       throw new ConflictException("User info body cannot be null.");
     }
@@ -61,13 +63,23 @@ export class UserService {
 
     const hashed = await bcrypt.hash(userDTO.password, rounds);
 
-    const email: string = userDTO.email;
-    const password: string = hashed;
-    const privileges: PrivilegesName[] = userDTO.privileges;
+    const role: Role = await this.prisma.role.findUnique({
+      where: {
+        name: userDTO.roleName
+      }
+    });
 
-    const data = {email, password, privileges};
+    if(!role){
+      throw new Error("Role not found.");
+    }
 
-    return this.prisma.user.create({data});
+    return this.prisma.user.create({
+      data: {
+        email: userDTO.email,
+        password: hashed,
+        role_id: role.id,
+      },
+    });
   }
 
   /**
@@ -77,8 +89,12 @@ export class UserService {
    * @returns An array of UserResponseDTO representing all users.
    */
   async findAll(): Promise<UserResponseDTO[]> {
-    const result = await this.prisma.user.findMany();
-
+    const result = await this.prisma.user.findMany({
+      include: {
+        role: true
+      }
+    });
+    
     return plainToInstance(UserResponseDTO, result, {excludeExtraneousValues: true});
   }
 
@@ -176,7 +192,7 @@ export class UserService {
     }
 
     const data: any = {
-      privileges: dto.privileges,
+      privileges: dto.roleName,
       password: dto.password
     };
 

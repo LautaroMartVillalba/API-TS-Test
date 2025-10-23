@@ -46,8 +46,8 @@ export class UserController {
    * @returns An array of UserResponseDTO representing all users.
    */
   @Get('/all')
-  @UseGuards(AuthGuard('jwt'), PermissionGuard)
-  @Privileges(PrivilegesName.READ.toString())
+  // @UseGuards(AuthGuard('jwt'), PermissionGuard)
+  // @Privileges(PrivilegesName.READ.toString())
   getAllUsers(): Promise<UserResponseDTO[]> {
     return this.userService.findAll();
   }

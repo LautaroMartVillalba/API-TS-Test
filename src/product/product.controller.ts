@@ -7,6 +7,7 @@ import { Privileges } from 'src/auth/auth.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { PrivilegesName } from '@prisma/client';
 import { PermissionGuard } from 'src/auth/auth.permissionguard';
+import { CategoryGuard } from 'src/auth/role/role.categoryguard';
 
 /**
  * ProductController
@@ -34,8 +35,8 @@ export class ProductController {
 	 * @returns The newly created product entity.
 	 */
 	@Post('/create')
-	@UseGuards(AuthGuard('jwt'), PermissionGuard)
-	@Privileges(PrivilegesName.POST.toString())
+	// @UseGuards(AuthGuard('jwt'), PermissionGuard)
+	// @Privileges(PrivilegesName.POST.toString())
 	createProduct(@Body() productDTO: ProductDTO){
 	    return this.productService.createProduct(productDTO);
 	}
@@ -48,8 +49,8 @@ export class ProductController {
 	 * @returns An array of ProductResponseDTO representing all products.
 	 */
 	@Get('/all')
-	@UseGuards(AuthGuard('jwt'), PermissionGuard)
-	@Privileges(PrivilegesName.READ.toString())
+	// @UseGuards(AuthGuard('jwt'), PermissionGuard)
+	// @Privileges(PrivilegesName.READ.toString())
 	getAllProducts(): Promise<ProductResponseDTO[]> {
 		return this.productService.findAll();
 	}
@@ -63,7 +64,7 @@ export class ProductController {
 	 * @returns An array of ProductResponseDTO objects matching the name.
 	 */
 	@Get('/byname')
-	@UseGuards(AuthGuard('jwt'), PermissionGuard)
+	@UseGuards(AuthGuard('jwt'), CategoryGuard, PermissionGuard)
 	@Privileges(PrivilegesName.READ.toString())
 	getByName(@Query('name') name: string): Promise<ProductResponseDTO[]>{
 		return this.productService.findByName(name);
