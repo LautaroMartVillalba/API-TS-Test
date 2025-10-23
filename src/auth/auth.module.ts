@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv';
 import { ConfigService } from "@nestjs/config";
 import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
-import { JwtStrategy } from "./auth.jwtstrategy";
+import { JwtStrategy } from "./jwt/auth.jwtstrategy";
 import { UserModule } from "src/user/user.module";
 dotenv.config()
 

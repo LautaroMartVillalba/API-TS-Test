@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Response } from "express";
 import { UserService } from "src/user/user.service";
@@ -47,7 +47,7 @@ export class AuthService{
         const payload = {
             sub: user.id, 
             email: user.email, 
-            privileges: user.privileges
+            role: user.role_id
         };
         
         const accessToken = await this.jwtService.signAsync(
@@ -114,14 +114,14 @@ export class AuthService{
             const user = await this.userService.findRawByEmailForAuth(payload.sub)
             
             if(!user){
-                throw new NotFoundException("user not found");
+                throw new Error("user not found");
             }
             
             const newAccessToken =  await this.jwtService.signAsync(
                 {
                     sub: user.id,
                     email: user.email,
-                    privileges: user.privileges
+                    role: user.role_id
                 });
             
             response.cookie(

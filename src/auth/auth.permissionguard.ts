@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
-import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { Observable } from "rxjs";
 import { PRIVILEGES_KEY } from "./auth.decorator";
+import { PrismaService } from "prisma/prisma.service";
 
 /**
  * PermissionGuard
@@ -24,7 +24,7 @@ import { PRIVILEGES_KEY } from "./auth.decorator";
  */
 @Injectable()
 export class PermissionGuard implements CanActivate{
-    constructor(private reflector: Reflector){}
+    constructor(private reflector: Reflector, private readonly prisma: PrismaService){}
 
     /**
      * canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean>
@@ -33,24 +33,35 @@ export class PermissionGuard implements CanActivate{
      * @param context - ExecutionContext providing access to the current request.
      * @returns true if the user has at least one required privilege or if no privileges are specified; false otherwise.
      */
-    canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+    async canActivate(context: ExecutionContext): Promise<boolean> {
         const requiredPermissions = this.reflector.getAllAndOverride<string[]>(
             PRIVILEGES_KEY, 
             [context.getHandler(), context.getClass()]
         )
-
         if(!requiredPermissions){
             return true;
         }
 
         const {user} = context.switchToHttp().getRequest();
 
-        if(!user || !user.privileges){
+        if(!user || !user.role){
             return false;
         }
 
-        return requiredPermissions.some(privilege => 
-            user.privileges.includes(privilege),
+        const roleId = user.role;
+        const roleInDb = await this.prisma.role.findUnique({
+            where:{
+                id: roleId
+            },
+        });
+
+        if(!roleInDb){
+            throw new ForbiddenException("You're not autenticated.");
+        }
+        const userCategories = roleInDb.privileges;
+
+        return requiredPermissions.some(privilege =>
+            userCategories.toString().includes(privilege)
         );
     }
 }
