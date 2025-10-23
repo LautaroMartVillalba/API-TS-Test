@@ -39,9 +39,7 @@ JWT_SECRET="your-access-secret"
 JWT_REFRESH_SECRET="your-refresh-secret"
 ```
 
-3. Run migrations / start Postgres (if you use docker-compose, start the DB)
-
-4. Start in development mode
+3. Start in development mode
 
 ```bash
 npm run start:dev
@@ -109,5 +107,3 @@ Yoy can change name and brand values as you want, allways like a string type; sa
 - The code includes simple console.log traces for debugging authentication flows —
 	remove them in production.
 
-If you want, I can also add example curl commands for the main flows (login/refresh) or
-create a small Postman collection. Which would you prefer?
