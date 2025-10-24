@@ -18,6 +18,11 @@ export class RoleController{
         return this.service.getRoleById(id);
     }
 
+    @Get('/all')
+    getAll(){
+        return this.service.getAllRoles();
+    }
+
     @Get('/byname')
     getByName(@Query('name') name: string){
         return this.service.getRoleByName(name);

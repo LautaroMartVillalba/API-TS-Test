@@ -33,6 +33,10 @@ export class RoleService{
         });
     }
 
+    getAllRoles(): Promise<Role[] | null>{
+        return this.prisma.role.findMany();
+    }
+
     async getRoleById(id: number): Promise<Role>{
         if(id == null){
             throw new Error("Id cannot be null.");
