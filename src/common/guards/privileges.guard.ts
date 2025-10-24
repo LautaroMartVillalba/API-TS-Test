@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { PRIVILEGES_KEY } from "./auth.decorator";
+import { PRIVILEGES_KEY } from "src/common/decorators/auth.decorator";
 import { PrismaService } from "prisma/prisma.service";
 
 /**

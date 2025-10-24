@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
 import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
-import { UserDTO } from './user.dto';
+import { UserDTO } from './dto/user.dto';
 import { plainToInstance } from 'class-transformer';
-import { UserResponseDTO } from './user.dtoresponse';
+import { UserResponseDTO } from './dto/user.dtoresponse';
 import { Role, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 

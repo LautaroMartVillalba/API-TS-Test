@@ -1,13 +1,13 @@
 /* eslint-disable prettier/prettier */
 import { Body, Controller, Delete, Get, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserDTO } from './user.dto';
-import { UserResponseDTO } from './user.dtoresponse';
+import { UserDTO } from './dto/user.dto';
+import { UserResponseDTO } from './dto/user.dtoresponse';
 import { AuthGuard } from '@nestjs/passport';
-import { PermissionGuard } from 'src/auth/auth.permissionguard';
-import { Privileges } from 'src/auth/auth.decorator';
+import { PermissionGuard } from 'src/common/guards/privileges.guard';
+import { Privileges } from 'src/common/decorators/auth.decorator';
 import { PrivilegesName } from '@prisma/client';
-import { CategoryGuard } from 'src/auth/role/role.categoryguard';
+import { CategoryGuard } from 'src/common/guards/category.guard';
 
 /**
  * UserController

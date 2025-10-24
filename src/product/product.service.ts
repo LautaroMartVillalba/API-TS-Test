@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
 import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
-import { ProductDTO } from './product.dto';
+import { ProductDTO } from './dto/product.dto';
 import { plainToInstance } from 'class-transformer';
-import { ProductResponseDTO } from './product.dtoresponse';
+import { ProductResponseDTO } from './dto/product.dtoresponse';
 import { CategoryName } from '@prisma/client';
 
 /**
