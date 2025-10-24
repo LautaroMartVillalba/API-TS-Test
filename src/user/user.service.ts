@@ -191,14 +191,19 @@ export class UserService {
       throw new ConflictException("User info body cannot be null.");
     }
 
-    const data: any = {
-      privileges: dto.roleName,
-      password: dto.password
-    };
+    const userInDB = this.prisma.user.findUnique({
+      where:{
+        email: email
+      }
+    });
 
     const result = await this.prisma.user.update({
       where: {email},
-      data,
+      data: {
+        email: dto.email ?? (await userInDB).email,
+        password: dto.password ?? (await userInDB).password,
+        role_id: dto.roleId ?? (await userInDB).role_id
+      }
     });
 
     return plainToInstance(UserResponseDTO, result, {excludeExtraneousValues:true});

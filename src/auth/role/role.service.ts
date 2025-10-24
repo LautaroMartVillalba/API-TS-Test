@@ -2,7 +2,9 @@
 import { PrismaService } from "prisma/prisma.service";
 import { RoleDTO } from "./role.roledto";
 import { Role } from "@prisma/client";
+import { Injectable } from "@nestjs/common";
 
+@Injectable()
 export class RoleService{
     constructor(private prisma: PrismaService){}
 
@@ -11,13 +13,13 @@ export class RoleService{
             throw new Error("Insert the entire Role data: name, category/ies name and privilege/s name");
         }
 
-        const data = {
-            name: dto.name,
-            categories: dto.categories,
-            privileges: dto.privileges
-        }
-
-        return this.prisma.role.create({data});
+        return this.prisma.role.create({
+            data: {
+                name: dto.name,
+                categories: dto.categories,
+                privileges: dto.privileges
+            }
+        });
     }
 
     getRoleByName(name: string): Promise<Role | null>{

@@ -62,7 +62,7 @@ export class CategoryGuard implements CanActivate{
         const productId = request.query.id || request.params.id;
         if(productId){
             const result = await this.prisma.product.findMany({
-                where: {category: productId},
+                where: {id: Number(productId)},
                 select: {category: true}
             });
             

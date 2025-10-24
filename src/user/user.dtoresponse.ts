@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Exclude, Expose } from "class-transformer";
-import { Role } from "@prisma/client";
+// import { Role } from "@prisma/client";
 
 export class UserResponseDTO {
 
@@ -11,6 +11,6 @@ export class UserResponseDTO {
     @Exclude()
     password: string;
     @Expose()
-    role: Role;
+    roleId: number;
 
 }

@@ -6,11 +6,13 @@ export class UserDTO {
     private _email: string;
     private _password: string;
     private _roleName: string;
+    private _roleId: number;
 
-    constructor(email: string, password: string, roleName: string) {
+    constructor(email: string, password: string, roleName: string, roleId: number) {
         this.email = email;
         this.password = password;
         this.roleName = roleName;
+        this.roleId = roleId;
     }
 
     
@@ -37,5 +39,11 @@ export class UserDTO {
     }
     public set roleName(value: string) {
         this._roleName = value;
+    }
+    public get roleId(): number {
+        return this._roleId;
+    }
+    public set roleId(value: number) {
+        this._roleId = value;
     }
 }
