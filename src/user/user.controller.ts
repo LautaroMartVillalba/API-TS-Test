@@ -7,6 +7,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { PermissionGuard } from 'src/auth/auth.permissionguard';
 import { Privileges } from 'src/auth/auth.decorator';
 import { PrivilegesName } from '@prisma/client';
+import { CategoryGuard } from 'src/auth/role/role.categoryguard';
 
 /**
  * UserController
@@ -46,8 +47,8 @@ export class UserController {
    * @returns An array of UserResponseDTO representing all users.
    */
   @Get('/all')
-  // @UseGuards(AuthGuard('jwt'), PermissionGuard)
-  // @Privileges(PrivilegesName.READ.toString())
+  @UseGuards(AuthGuard('jwt'), CategoryGuard, PermissionGuard)
+  @Privileges(PrivilegesName.READ.toString())
   getAllUsers(): Promise<UserResponseDTO[]> {
     return this.userService.findAll();
   }
@@ -61,7 +62,7 @@ export class UserController {
    * @returns UserResponseDTO corresponding to the given email.
    */
   @Get('/byemail')
-  @UseGuards(AuthGuard('jwt'), PermissionGuard)
+  @UseGuards(AuthGuard('jwt'), CategoryGuard, PermissionGuard)
   @Privileges(PrivilegesName.READ.toString())
   getByEmail(@Query('email') email: string): Promise<UserResponseDTO>{
     return this.userService.findByEmail(email);
@@ -77,7 +78,7 @@ export class UserController {
    * @returns Updated UserResponseDTO object.
    */
   @Patch('/update')
-  @UseGuards(AuthGuard('jwt'), PermissionGuard)
+  @UseGuards(AuthGuard('jwt'), CategoryGuard, PermissionGuard)
   @Privileges(PrivilegesName.PATCH.toString())
   updateUser(@Query('email') email: string,@Body() dto: UserDTO): Promise<UserResponseDTO>{
     return this.userService.update(email, dto);
@@ -91,7 +92,7 @@ export class UserController {
    * @param email - The email of the user to delete.
    */
   @Delete('/delete')
-  @UseGuards(AuthGuard('jwt'), PermissionGuard)
+  @UseGuards(AuthGuard('jwt'), CategoryGuard, PermissionGuard)
   @Privileges(PrivilegesName.DELETE.toString())
   deleteByEmail(@Query('email') email: string) {
     this.userService.delete(email);

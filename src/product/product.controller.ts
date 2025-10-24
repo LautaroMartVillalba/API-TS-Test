@@ -35,8 +35,8 @@ export class ProductController {
 	 * @returns The newly created product entity.
 	 */
 	@Post('/create')
-	// @UseGuards(AuthGuard('jwt'), PermissionGuard)
-	// @Privileges(PrivilegesName.POST.toString())
+	@UseGuards(AuthGuard('jwt'), CategoryGuard, PermissionGuard)
+	@Privileges(PrivilegesName.POST.toString())
 	createProduct(@Body() productDTO: ProductDTO){
 	    return this.productService.createProduct(productDTO);
 	}
@@ -49,8 +49,8 @@ export class ProductController {
 	 * @returns An array of ProductResponseDTO representing all products.
 	 */
 	@Get('/all')
-	// @UseGuards(AuthGuard('jwt'), PermissionGuard)
-	// @Privileges(PrivilegesName.READ.toString())
+	@UseGuards(AuthGuard('jwt'), CategoryGuard, PermissionGuard)
+	@Privileges(PrivilegesName.READ.toString())
 	getAllProducts(): Promise<ProductResponseDTO[]> {
 		return this.productService.findAll();
 	}
@@ -81,7 +81,7 @@ export class ProductController {
 	 * @returns Updated ProductResponseDTO object.
 	 */
 	@Patch('/update')
-	@UseGuards(AuthGuard('jwt'), PermissionGuard)
+	@UseGuards(AuthGuard('jwt'), CategoryGuard, PermissionGuard)
 	@Privileges(PrivilegesName.PATCH.toString())
 	updateProduct(@Query('id') id: string, @Body() dto: ProductDTO): Promise<ProductResponseDTO>{
 		const parsedId = Number(id);
@@ -97,7 +97,7 @@ export class ProductController {
 	 * @param id - The ID of the product to delete (string from query, parsed to number).
 	 */
 	@Delete('/delete')
-	@UseGuards(AuthGuard('jwt'), PermissionGuard)
+	@UseGuards(AuthGuard('jwt'), CategoryGuard, PermissionGuard)
 	@Privileges(PrivilegesName.DELETE.toString())
 	deleteById(@Query('id') id: string) {
 		const parsedId = Number(id);
