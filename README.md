@@ -11,7 +11,7 @@ tokens), cookie-based token storage, and simple permission guards.
 - User CRUD (with DTOs and response shaping)
 - Product CRUD example
 - JWT authentication with access + refresh tokens stored as HTTP-only cookies
-- Permission-based authorization using a `@Privileges(...)` decorator and a guard
+- Permission-based authorization using a `@Privileges(...)` decorator and `@UserGuards(...)`
 - Prisma ORM for Postgres
 
 ## Quickstart (local)
@@ -42,45 +42,68 @@ JWT_REFRESH_SECRET="your-refresh-secret"
 3. Start in development mode
 
 ```bash
+npm run initdb
+```
+This command will:
+- Execute `npx prisma generate` to generate database models.
+- Init docker database container with `docker-compose up -d`.
+- Synchronize de contaner with prisma by `npx prisma db push`.
+- Insert testing registers with `npx prisma db seed`. You can modify this testing migraitons register by modify /prisma/prisma.seed.ts
+
+```bash
 npm run start:dev
 ```
-
-The server listens on port `3000` by default.
+To init local server on port `3000`.
 
 ## Example bodies
 
 ### User
 If you can create a user, you can put this body model:
-```
+```json
 {
     "email":"example@gmail.com",
     "password":"example",
-    "privileges": ["POST"]
+    "role": "admin"
 }
 ```
-You can change `privileges` value to:
-- `["POST", "READ", "PATCH"] `
-
-to include more than one privilege. You can combine between:
--  `READ`
--  `POST`
--  `PATCH`
--  `PUT`
--  `DELETE` 
+You can change `role` value to another role name. You can get all roles and her categories in /role/all
 
 ### Product
 
 If you want to create a product register, you can put this body model:
-```
+```json
 {
-    "name":"Paracetamol",
-    "brand":"Puto",
+    "name":"Apple",
+    "brand":"Juan",
+	"category": "FOOD",
     "unitPrice": 10,
     "stock": 100
 }
 ```
 
-Yoy can change name and brand values as you want, allways like a string type; same with unitPrice and stock, like number types.
+### Role
+You can create your own role in /role/create sending this body:
+```json
+{
+	"name": "MyOwnRole",
+	"privileges": ["READ", "POST", "DELETE"],
+	"categories": ["TECHNOLOGY", "SCHOOL", "FOOD", "PHARMACY"],
+}
+```
+You can combine a loot of privileges and categories
+For privileges use:
+- `READ`
+- `POST`
+- `PATCH`
+- `PUT`
+- `DELETE`
+
+For categories use:
+- `FOOD`
+- `TOOL`
+- `SCHOOL`
+- `PHARMACY`
+- `TECHNOLOGY`
 
 ## Important endpoints
 
